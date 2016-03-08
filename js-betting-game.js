@@ -1,6 +1,8 @@
 "use strict";
 // window.alert("Hello! You start off with 100. You're allowed to bet 5-10" );
 $(function(){
+  $('#bet').blur(validateBet);
+  $('#guess').blur(validateGuess);
   $('#submit').on('click', gameStart);
 });
 
@@ -9,6 +11,10 @@ $(function(){
 });
 
 
+// function initialize(){
+//   var input_bet = game.getPlayerBet(); 
+//   var input_guess = game.getGuess();
+// } 
 
 var game = {
   player_bet:null,
@@ -30,20 +36,28 @@ function update_bankroll(){
   document.querySelector('#balance').innerHTML = game.bankroll;
 }
 
-function validate(){
-  console.log($('#bet'));
-  console.log($('#guess'));
+function validateBet(){
+  if( isNaN(game.getPlayerBet()) ){
+    alert("You must enter a number amount for how much you want to bet!");
+  }
+}
+function validateGuess(){
+  // var bet_input = ($('#bet').val());
+  // var number_input = ($('#guess').val());
+  if( isNaN(game.getGuess()) ){
+    alert("You must enter a number for your guess!!");
+  }
 }
 
 function gameStart(){
-  game.getPlayerBet();
-  game.getRandom_Num(1,10);
-  game.getGuess();
+  var computerNum = game.getRandom_Num(1,10);
+  var playerNum = game.getGuess();
 
   // output player bet, amount, and guess, random_num into another div? 
   // if player bets more than their bank throw an alert
   // if player bets more than 10 throw an alert
   // console.log(game.random_number, bankroll, player_bet, player_guess)
+
   if(game.player_bet > game.bankroll){
     // display message in box "you can't bet more money than you have!";
     var message = "You can't bet more money than you have!";
@@ -54,25 +68,32 @@ function gameStart(){
       var messageWin = "You won! Heres " + game.player_bet*2 + " for you!";
       game.bankroll += game.player_bet;
       update_bankroll();
+      $('#computerguess').text(computerNum);
+      $('#playerguess').text(playerNum);
       $('#output').text(messageWin);
     }else if(game.random_number == (game.player_guess + 1 || game.player_guess -1)){
       //display message in box "Heres your money back... You were close";
       var messageTie = "Here's your money back... You were close";
+      $('#computerguess').text(computerNum);
+      $('#playerguess').text(playerNum);
       $('#output').text(messageTie);
     }else{
       //display message in box "Not even close! Baby! You lost!";
       var messageLose = "Not even close baby! You lost!";
       game.bankroll -= game.player_bet;
-      update_bankroll()
+      update_bankroll();
       $('#output').text(messageLose);
+      $('#computerguess').text(computerNum);
+      $('#playerguess').text(playerNum);
       
       if(game.bankroll <= 0){
         //display message in box "You lost all your money! Get out of here!";
-        alert("Sorry you lost all your money! Hahaha.")
-      };
-    };
-  };
-};
+        alert("Sorry you lost all your money! Hahaha.");
+
+      }
+    }
+  }
+}
 
 // while(bankroll>0){
 //   var bet_amount = parseInt(prompt('How much do you want to bet 5-10 dollars'));
