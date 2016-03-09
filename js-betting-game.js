@@ -1,8 +1,10 @@
 "use strict";
 // window.alert("Hello! You start off with 100. You're allowed to bet 5-10" );
 $(function(){
-  $('#bet').blur(validateBet);
-  $('#guess').blur(validateGuess);
+  $('#submit').hide();
+  $('#betError').hide();
+  $('#bet').on('input',validateBet);
+  $('#guess').on('input',validateGuess);
   $('#submit').on('click', gameStart);
 });
 
@@ -27,7 +29,7 @@ var game = {
   getRandom_Num: function(min, max) {
     return this.random_number = Math.floor(Math.random()*(max-min+1)+min);
   },
-  getGuess: function(){
+  getGuess: function(){ 
     return this.player_guess = parseInt($('#guess').val());
   }, 
 };
@@ -38,14 +40,16 @@ function update_bankroll(){
 
 function validateBet(){
   if( isNaN(game.getPlayerBet()) ){
-    alert("You must enter a number amount for how much you want to bet!");
+    $('#betError').fadeIn(700).find('span').text('Please enter a number').css({'color':'red'});
   }
 }
 function validateGuess(){
   // var bet_input = ($('#bet').val());
   // var number_input = ($('#guess').val());
   if( isNaN(game.getGuess()) ){
-    alert("You must enter a number for your guess!!");
+    $('#guessError').fadeIn(700).find('span').text('Please enter a number').css({'color':'red'});
+  }else{
+    $('#submit').fadeIn(500);
   }
 }
 
